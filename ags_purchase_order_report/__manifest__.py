@@ -6,7 +6,7 @@
     Este modulo incorpora en lineas en la orden de compra el campo cliente, para luego imprimir en el reporte de orden de compras con clientes por producto
     """,
     'depends' : ['purchase'],
-    'data' : [],
+    'data' : ['views/purchase_order_view.xml'],
     'installable' : False,
     'application' : False,
 }
