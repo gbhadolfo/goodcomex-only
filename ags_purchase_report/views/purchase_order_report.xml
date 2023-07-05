@@ -146,7 +146,7 @@
 <!-- primero me fijo si todas las lineas estan -->	
 	<t t-set="all_partner_delivery_id" t-value="0"/>
 	<t t-foreach="SoloPartners" t-as="partner">
-		<t t-if="partner['partner_delivery_id']"><t t-value="1" t-set="all_partner_delivery_id"/>/t>
+		<t t-if="partner['partner_delivery_id']"><t t-value="1" t-set="all_partner_delivery_id"/></t>
 	</t>
 	<t t-if="all_partner_delivery_id=='0'">
                 <div>
