@@ -201,7 +201,7 @@ offset=0, limit=None, orderby=False, lazy=False)" t-set="SoloProductosTablaPrinc
 <div class="oe_structure"/> 
  <br></br><br></br>           
 <!--tabla dada vuelta -->
-	<t t-value="o.order_line.read_group([('order_id','=',o.id)],
+	<t t-value="o.order_line.read_group([('order_id','=',o.id),('partner_delivery_id','!=',False)],
 	['partner_delivery_id','product_id','product_qty:sum'], ['partner_delivery_id','product_id'],
 	offset=0, limit=None, orderby='partner_delivery_id', lazy=False)" t-set="Todas"/>                      
 
