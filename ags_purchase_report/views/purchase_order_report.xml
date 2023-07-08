@@ -205,26 +205,15 @@ offset=0, limit=None, orderby=False, lazy=False)" t-set="SoloProductosTablaPrinc
 	['partner_delivery_id','product_id','product_qty:sum'], ['partner_delivery_id','product_id'],
 	offset=0, limit=None, orderby='partner_delivery_id', lazy=False)" t-set="Todas"/>                      
 
-	<t t-value="o.order_line.read_group([('order_id','=',o.id)],
+	<t t-value="o.order_line.read_group([('order_id','=',o.id),('partner_delivery_id','!=',False)],
 	['product_id','product_qty:sum'], ['product_id'],
 	offset=0, limit=None, orderby=False, lazy=False)" t-set="SoloProductos"/>
 	
-	<t t-value="o.order_line.read_group([('order_id','=',o.id)],
+	<t t-value="o.order_line.read_group([('order_id','=',o.id),('partner_delivery_id','!=',False)],
 	['partner_delivery_id','product_qty:sum'], ['partner_delivery_fantasy_name','partner_delivery_id'],
 	offset=0, limit=None, orderby=False, lazy=False)" t-set="SoloPartners"/> 
 
-<!-- primero me fijo si todas las lineas estan -->	
-	<t t-set="one_partner_delivery_id_is_null" t-value="0"/>
-	<t t-foreach="SoloPartners" t-as="partner">
-		<t t-if="partner['partner_delivery_id']==False"><t t-value="1" t-set="one_partner_delivery_id_is_null"/></t>
-	</t>
 
-	<t t-if="one_partner_delivery_id_is_null==1">
-    <div>
-        No se genera <strong>informe de entrega por partner</strong> pues no existe está establecido el partner de entrega en alguna linea de la orden de compras.
-    </div>	
-	</t>	
-	<t t-if="one_partner_delivery_id_is_null==0">		
 		<table class="table table-sm o_main_table">
 			<thead>
 				<tr><th><strong>Producto</strong></th>
@@ -266,7 +255,7 @@ offset=0, limit=None, orderby=False, lazy=False)" t-set="SoloProductosTablaPrinc
 				</tfoot>
 			</tbody>
 		</table>
-	</t>
+
 
 <!--fin tabla dada vuelta -->                
           
