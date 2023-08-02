@@ -1,10 +1,10 @@
 <t t-name="purchase.report_purchaseorder_document_copy_1">
     <t t-call="web.external_layout">
         <t t-set="o" t-value="o.with_context(lang=o.partner_id.lang)"/>
-        <t t-set="address">
+<!--         <t t-set="address">
             <div t-field="o.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;phone&quot;], &quot;no_marker&quot;: True, &quot;phone_icons&quot;: True}"/>
             <p t-if="o.partner_id.vat"><t t-esc="o.company_id.country_id.vat_label or 'Tax ID'"/>: <span t-field="o.partner_id.vat"/></p>
-        </t>
+        </t> -->
         <t t-if="o.dest_address_id">
             <t t-set="information_block">
                 <strong>Shipping address:</strong>
@@ -52,14 +52,14 @@
         
             </div>
     <div class="row">
-      <div class="col-3">
-    <span>
-      <strong>Purchase Representative:</strong>
-  <br/>
-    </span>
-  
-    <span t-field="o.user_id.name"/>
-  </div>
+		<div class="col-3">
+			<span>
+			  <strong>Purchase Representative:</strong>
+				<br/>
+			</span>
+		  
+				<span t-field="o.user_id.name"/>
+		</div>
       <div class="col-3">
     <span>
       <strong>Order Date:</strong>
@@ -75,18 +75,30 @@
         </span>
         <span t-field="o.date_planned" t-options-widget="&quot;date&quot;"/>
       </div>
+	  	<div class="col-3">
+			<span>
+			  <strong>Payment Term:</strong>
+				<br/>
+			</span>
+		  
+				<span t-field="o.payment_term_id.name"/>
+		</div>
       <div class="col-3"/>
+
+	  
+	  
     </div>
   
 
 <!--tabla principal -->
 <br></br><br></br>
 <t t-value="o.order_line.read_group([('order_id','=',o.id)],
-['product_id','product_uom','number_of_packages', 'product_qty:sum','price_total:sum','price_subtotal:sum'], ['product_id','product_uom','number_of_packages'],
+['product_id','product_uom','number_of_packages:sum', 'product_qty:sum','price_total:sum','price_subtotal:sum'], ['product_id','product_uom'],
 offset=0, limit=None, orderby=False, lazy=False)" t-set="SoloProductosTablaPrincipal"/>	
 	
-
+  <h4 align='center'><strong>Quantity per shop</strong></h4>
 <table class="table table-sm o_main_table">
+
 	<thead>
 		<tr>
 			<th name="th_description">
@@ -168,6 +180,77 @@ offset=0, limit=None, orderby=False, lazy=False)" t-set="SoloProductosTablaPrinc
 					</td>
 				</t> -->
 			</tr>
+			<!-- ABRO POR BOM -->
+			
+			<t t-if='RecordProduct.bom_ids'>
+				<tr>
+					<t t-foreach="RecordProduct.bom_ids" t-as="bom_ids">
+						<!-- table class="table table-sm o_main_table" -->
+							<thead>
+								<tr>
+									<th>
+										<strong> </strong>
+									</th>								  
+									<th>
+										<strong>Code</strong>
+									</th>
+									<th>
+										<strong>Description</strong>
+									</th>
+									<th>
+										<span>Barcode</span>
+									</th>
+									<th>
+										<span>Picture</span>
+									</th>
+									<th>
+										<span>Qty p/ CTN</span>
+									</th>
+<!-- 									<th>
+										<span>CTN Total</span>
+									</th> -->
+									<th name="th_price_unit" class="text-right">
+										<strong>Unit Price</strong>
+									</th>
+								</tr>
+							</thead>
+					    <t t-foreach="bom_ids.bom_line_ids" t-as="bom_line">
+  							<tbody>
+  								<tr>
+					<td>
+						<strong></strong>
+					</td>  								  
+  									<td>
+  										<span t-field="bom_line.product_id.default_code"/>
+  									</td>
+  									<td>
+  										<span t-field="bom_line.product_id.name"/>
+  									</td>
+  									<td>
+  										<span t-field="bom_line.product_id.barcode"/>
+  									</td>
+  									<td>
+  										<span t-field="bom_line.product_id.image_128" t-options-widget="&quot;image&quot;" style="display:inline-block;width:100px"/>
+  									</td>
+  									<td class="text-right">
+  										<span t-field="bom_line.product_qty"/>
+  										<span t-field="bom_line.product_uom_id"/>
+  									</td>
+<!--   									<th>
+  									  <t t-set="cantidad_bom" t-value="bom_line.product_qty*line['product_qty']"/>
+  										<span style="text-align:right;" t-esc="cantidad_bom"/>
+  									</th> -->
+  									<td class="text-right">
+  										<span t-field="bom_line.product_id.standard_price" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
+  									</td>
+  
+  								</tr>
+  							</tbody>
+  					</t>
+						<!-- /table -->	
+					</t>
+				</tr>
+			</t>			
 		</t>
 		<!-- <t t-if="current_section and (line_last or o.order_line[line_index+1].display_type == 'line_section')"> -->
 <!-- 			<tr class="is-subtotal text-right">
@@ -213,10 +296,10 @@ offset=0, limit=None, orderby=False, lazy=False)" t-set="SoloProductosTablaPrinc
 	['partner_delivery_id','product_qty:sum'], ['partner_delivery_fantasy_name','partner_delivery_id'],
 	offset=0, limit=None, orderby=False, lazy=False)" t-set="SoloPartners"/> 
 
-
+  <h4 align='center'><strong>Quantity per shop</strong></h4>
 		<table class="table table-sm o_main_table">
 			<thead>
-				<tr><th><strong>Producto</strong></th>
+				<tr><th><strong>Product</strong></th>
 					<t t-foreach="SoloPartners" t-as="partner">
 						<th><strong><t t-esc="partner['partner_delivery_fantasy_name']"/></strong></th>	
 					</t>
@@ -233,7 +316,7 @@ offset=0, limit=None, orderby=False, lazy=False)" t-set="SoloProductosTablaPrinc
 							
 								<t t-if="linea['product_id'][0]==producto_unico['product_id'][0] and 
 								linea['partner_delivery_id'][0]==partner_unico['partner_delivery_id'][0]" >
-									<td style="text-align:right;"><t t-esc="linea['product_qty']"/></td>
+									<td><t t-esc="int(linea['product_qty'])"/></td>
 									<t t-value="1" t-set="EncontroDato"/>
 								</t>
 							
@@ -249,7 +332,7 @@ offset=0, limit=None, orderby=False, lazy=False)" t-set="SoloProductosTablaPrinc
 				<tfoot>
 					<tr><td><strong>Total</strong></td>
 						<t t-foreach="SoloPartners" t-as="partner">
-							<td style="text-align:right;"><strong><t t-esc="partner['product_qty']"/></strong></td>	
+							<td><strong><t t-esc="int(partner['product_qty'])"/></strong></td>	
 						</t>
 					</tr>
 				</tfoot>
